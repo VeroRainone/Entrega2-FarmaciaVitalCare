@@ -1,0 +1,16 @@
+Id_empleado,Nombre,Apellido,Email,Telefono,Puesto,Salario
+1,Carlos,Gomez,cgomez@mail.com,12334455,Gerente,35000
+2,Ana,Lopez,alopez@mail.com,13445566,Farmaceutica,25000
+3,Luis,Martinez,lmartinez@mail.com,14556677,Contador,28000
+4,Laura,Perez,lpeerez@mail.com,15667788,Asistente,20000
+5,Pedro,Suarez,psuarez@mail.com,11778899,Vendedor,18000
+6,María,Lopez,mlopez@mail.com,11541987,Cajera,16500  
+7,Carlos,Fernandez,cfernandez@mail.com,11473290,Supervisor,24000  
+8,Ana,Gomez,agomez@mail.com,11198765,Vendedor,18000  
+9,Diego,Ramirez,dramirez@mail.com,11445566,Reponedor,15000  
+10,Laura,Martinez,lmartinez@mail.com,11876543,Cajera,17000  
+11,Sofia,Romero,sromero@mail.com,11788990,Gerente,32000  
+12,Juan,Gonzalez,jgonzalez@mail.com,11988776,Vendedor,18500  
+13,Andres,Torres,atorres@mail.com,11677889,Supervisor,25000  
+14,Elena,Perez,eperez@mail.com,11244665,Cajera,16000  
+15,Ricardo,Morales,rmorales@mail.com,11122334,Reponedor,15500  

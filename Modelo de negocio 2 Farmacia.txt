@@ -1,0 +1,135 @@
+Modelo de negocio Farmacia VitalCare.
+
+Esta base de datos resuelve la temática de la gestión de una farmacia, permite administrar su inventario, pedidos, proveedores, ventas y clientes, lo cual es crucial para su operación diaria.
+A continuación se detallan las tablas y funcionalidades a mayor profundidad.
+
+1- Detalle de tablas:
+Tabla Medicamentos: indica el nombre, precio, stock y la fecha de vencimiento de cada medicamento. 
+Campos: Id_medicamento INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	Nombre VARCHAR(100) NOT NULL,
+	Fecha_Vencimiento DATE NOT NULL,
+	Precio DOUBLE,
+	Stock INT,
+        Id_categoria INT,
+	FOREIGN KEY (Id_categoria) REFERENCES Categorias(Id_categoria)
+
+Tabla Categorías: se refiere al tipo de medicamento, si es un analgésico, antibiótico o vitaminas.
+Campos: Id_categoria INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	Nombre VARCHAR(100) NOT NULL
+
+Tabla Presentaciones: si viene en comprimidos, jarabe o es bebible.
+Campos: Id_presentacion INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	Tipo_presentacion VARCHAR(50) NOT NULL
+
+Tabla Dosis: es la cantidad en gramos o miligramos.
+Campos: Id_dosis INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    	Cantidad VARCHAR(50) NOT NUL
+
+Tabla Laboratorios: indica el proveedor(laboratorio) y sus datos de contacto como el nombre, dirección, teléfono y mail.
+Campos: Id_laboratorio INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	Nombre VARCHAR(100) NOT NULL,
+	Direccion VARCHAR(250),
+	Telefono VARCHAR(15) NOT NULL,
+	Mail VARCHAR(100) NOT NULL
+
+Tabla Empleados: guarda información sobre los empleados, el nombre, apellido, mail. teléfono, puesto de trabajo y salario.
+Campos: Id_empleado INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  	Nombre VARCHAR(100) NOT NULL,
+  	Apellido VARCHAR(100) NOT NULL,
+    	Email VARCHAR(100) NOT NULL,
+    	Telefono VARCHAR(15) NOT NULL,
+    	Puesto VARCHAR(100),  
+    	Salario DOUBLE
+
+Tabla FormasPago: Indica la forma de pago si es efectivo, tarjeta o transferencia con posibilidad de agregar otras formas.
+Campos: Id_forma_pago INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    	Descripcion VARCHAR(100) NOT NULL
+
+Tabla Pedidos: da información sobre el estado del pedido, la fecha, forma de pago y alguna observación si fuese necesaria.
+Campos: Id_pedido INT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
+    	fecha DATE, 
+    	Estado_pedido VARCHAR(50),
+	Id_forma_pago INT, 
+	Observaciones TEXT,
+    	Id_laboratorio INT,
+    	Id_empleado  INT,
+	FOREIGN KEY (Id_forma_pago) REFERENCES FormasPago(Id_forma_pago),
+    	FOREIGN KEY (Id_laboratorio) REFERENCES Laboratorios(Id_laboratorio),
+    	FOREIGN KEY (Id_empleado) REFERENCES Empleados(Id_empleado)
+
+Tabla Clientes: guarda información sobre los clientes como nombre, dirección teléfono y mail. 
+Campos: Id_cliente INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	Nombre VARCHAR(100) NOT NULL,
+	Apellido VARCHAR(100) NOT NULL,
+	Direccion VARCHAR(250),
+	Telefono VARCHAR(15) NOT NULL,
+	Mail VARCHAR(100) NOT NULL
+
+Tabla Ventas: los datos de las ventas, a qué cliente fueron realizadas y que empleado las realizó y el importe total.
+Campos: Id_venta INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    	Id_cliente INT,
+    	Id_empleado  INT,
+    	Importe_total DOUBLE,
+    	FOREIGN KEY (Id_cliente) REFERENCES Clientes(Id_cliente),
+	FOREIGN KEY (Id_empleado) REFERENCES Empleados(Id_empleado)
+
+
+Tabla Intermedias. Son las que corresponden a relaciones de muchos a muchos.
+Tabla Medicamentos_Laboratorios
+Campos:Id_laboratorio INT,
+       Id_medicamento INT,
+    	FOREIGN KEY (Id_medicamento) REFERENCES Medicamentos(Id_medicamento),
+    	FOREIGN KEY (Id_laboratorio) REFERENCES Laboratorios(Id_laboratorio),
+    	PRIMARY KEY (Id_medicamento, Id_laboratorio)
+
+Tabla Medicamentos_Presentaciones
+Campos: Id_medicamento INT,
+    	Id_presentacion INT,
+    	FOREIGN KEY (Id_medicamento) REFERENCES Medicamentos(Id_medicamento),
+    	FOREIGN KEY (Id_presentacion) REFERENCES Presentaciones(Id_presentacion),
+    	PRIMARY KEY (Id_medicamento, Id_presentacion)
+
+Tabla Medicamentos_Dosis
+Campos: Id_medicamento INT,
+    	Id_dosis INT,
+    	FOREIGN KEY (Id_medicamento) REFERENCES Medicamentos(Id_medicamento),
+    	FOREIGN KEY (Id_dosis) REFERENCES Dosis(Id_dosis),
+    	PRIMARY KEY (Id_medicamento, Id_dosis)
+
+Tabla Medicamentos_Pedidos
+Campos: Id_pedido INT,
+	Id_medicamento INT,
+	Cantidad INT,
+	Precio DOUBLE,
+	FOREIGN KEY (Id_pedido) REFERENCES pedidos(Id_pedido),
+	FOREIGN KEY (Id_medicamento) REFERENCES Medicamentos(Id_medicamento),
+	PRIMARY KEY (Id_pedido, Id_medicamento)
+
+Tabla Medicamentos_Ventas
+Campos: Id_medicamento INT,
+    	Id_venta INT,
+    	Cantidad INT,
+    	FOREIGN KEY (Id_medicamento) REFERENCES Medicamentos(Id_medicamento),
+    	FOREIGN KEY (Id_venta) REFERENCES Ventas(Id_venta),
+    	PRIMARY KEY (Id_medicamento, Id_venta)
+
+2- Funcionalidades que cubre la base de datos:
+
+A-Inventario de Medicamentos:
+Tablas como Medicamentos, Categorías, Presentaciones y Dosis permiten organizar la información detallada de los medicamentos, sus tipos de presentación, dosis disponibles y su clasificación por categoría.
+Las tablas intermedias como Medicamentos_Presentacion y Medicamentos_Dosis permiten definir las distintas presentaciones y dosis que tiene cada medicamento, cubriendo así distintas variaciones del mismo producto.
+
+B-Gestión de Laboratorios(Proveedores):
+La tabla Laboratorios y la relación Medicamentos_Laboratorios permiten administrar los laboratorios y fabricantes del medicamento, así como sus detalles de contacto como dirección, teléfono y correo.
+
+C-Pedidos de Medicamentos:
+La tabla Pedidos registra cada pedido realizado, incluyendo la fecha, estado del pedido, y la forma de pago. Esta tabla también permite la vinculación con un laboratorio específico y un empleado determinado, estableciendo quién suministrará los productos y llevara a cabo la operación.
+La tabla Medicamentos_pedidos contiene los detalles de cada pedido, como los medicamentos solicitados, la cantidad, y el precio. Esto permite calcular los totales y realizar un seguimiento de los pedidos realizados.
+
+D-Gestión de ventas:
+La tabla Ventas registra cada transacción realizada, incluyendo el cliente asociado, el empleado que procesó la venta, la forma de pago y el importe total. Además, permite realizar un seguimiento de las ventas, facilitando el análisis de los productos más demandados y la identificación de clientes frecuentes.
+
+
+
+
+

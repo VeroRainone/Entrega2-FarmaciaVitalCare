@@ -1,0 +1,22 @@
+COMO IMPORTAR DATOS DESDE UN ARCHIVO CSV A LA DATABASE CON MYSQL WORKBENCH.
+
+1- Abrir el esquema, ubicado en el panel izquierdo y seleccionar la tabla a la cual quiero importar los datos.
+
+2- Hacer clic derecho sobre la tabla y seleccionar "Table Data Import Wizard".
+
+3-Se va a abrir una ventana. Donde dice File Path, hacer clic en el botón Browse (Explorar o Seleccionar archivo) para buscar el archivo donde estan guardados los datos.
+
+4- El archivo debe estar en formato CSV, verificar que los datos estén bien escritos, separados por coma, que los campos, los datos y los tipo de datos coincidan, que no haya acentos.  
+ 
+5- Configurar los ajustes:
+Hay diferentes opciones puede ser hacer un truncate de la tabla, crearla, yo usé la opción: "Using excisting table" porque ya tenía la tabla creada.
+
+6- Al clicar en Next chequear que coincidan los datos con las columnas correspondientes, que estén bien macheados.
+
+7- Darle Next nuevamente, el sistema pone un check a "Prepare Import" y "Import data file" cuando ya están listos. Hacer clic en Next y luego en Finish.
+
+8- Una vez completado, te da la información de la cantidad de los registros insertados.
+
+9- Ultimo paso ir a la base de datos y verificar que los datos hayan sido cargados correctamente en la tabla haciendo un SELECT y también verificar que la cantidad de registros coincidan. 
+
+10- Esto se debe hacer con cada tabla a la cual se desee importar la información.

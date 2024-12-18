@@ -1,0 +1,16 @@
+Id_cliente,Nombre,Apellido,Direccion,Telefono,Mail
+1,Juan, Perez,Calle 123,15876655,juanperez@mail.com
+2,Maria, Garcia,Calle 456,11765544,mariagarcia@mail.com
+3,Pedro, Fernandez,Avenida 789,15654433,pedrofernandez@mail.com
+4,Ana, Sanchez,Calle 101,15543322,anasanchez@mail.com
+5,Luis, Rodriguez,Carretera 202,11432211,luisrodriguez@mail.com
+6,Maria, Gonzalez,Avenida Central 45,11456701,mariagonzalez@mail.com  
+7,Carlos, Perez,Calle Luna 12,11236789,carlosperez@mail.com  
+8,Sofia, Ramirez,Barrio Las Flores 89,11396543,sofiaramirez@mail.com  
+9,Juan, Martinez,Plaza Mayor 7,11412334,juanmartinez@mail.com  
+10,Ana, Lopez,Paseo del Río 33,11223344,analopez@mail.com  
+11,Pedro, Garcia,Callejón del Sol 15,11456778,pedrogarcia@mail.com  
+12,Laura, Torres,Boulevard Norte 50,11334556,lauratorres@mail.com  
+13,Diego, Sanchez,Calle Victoria 22,11478990,diegosanchez@mail.com  
+14,Elena, Morales,Carretera Sur 99,11267889,elenamorales@mail.com  
+15,Andres, Herrera,Parque Central 3,11321445,andresherrera@mail.com  

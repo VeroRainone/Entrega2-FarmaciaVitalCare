@@ -1,0 +1,21 @@
+Id_pedido,fecha,Estado_pedido,Forma_pago,Observaciones,Id_laboratorio,Id_empleado
+1,2024-11-01,Procesando,1,"Pedido urgente",1,5  
+2,2024-11-02,Enviado,2,"Entrega en 3 dias",2,7  
+3,2024-11-03,Completado,1,"",3,9  
+4,2024-11-04,Cancelado,3,"Cliente cambio de opinion",4,6  
+5,2024-11-05,Procesando,2,"Entrega en tienda",5,8  
+6,2024-11-06,Enviado,1,"Revisar disponibilidad",1,10  
+7,2024-11-07,Completado,3,"Pedido para reposicion",2,11  
+8,2024-11-08,Cancelado,2,"Pago rechazado",3,13  
+9,2024-11-09,Procesando,1,"Agregar muestras gratuitas",4,12  
+10,2024-11-10,Enviado,3,"Entrega express",5,14  
+11,2024-11-11,Completado,2,"",1,15  
+12,2024-11-12,Cancelado,1,"Producto descontinuado",2,9  
+13,2024-11-13,Procesando,2,"Verificar precios",3,7  
+14,2024-11-14,Enviado,3,"Entrega parcial",4,6  
+15,2024-11-15,Completado,1,"Pedido recurrente",5,8  
+16,2024-11-16,Cancelado,2,"Error en la direccion",1,13  
+17,2024-11-17,Procesando,3,"Pendiente de confirmacion",2,10  
+18,2024-11-18,Enviado,1,"Pedido internacional",3,11  
+19,2024-11-19,Completado,2,"Descuento aplicado",4,12  
+20,2024-11-20,Cancelado,3,"Problema con el inventario",5,14  
