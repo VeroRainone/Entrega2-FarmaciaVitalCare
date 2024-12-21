@@ -1,0 +1,158 @@
+Detalles de Vistas, Store Procedures, Funciones y Triggers.
+
+1- Vista: V_Estado_Pedidos
+Esta vista muestra los pedidos agrupados según el estado, se puede ver cuántos pedidos están pendientes, en proceso o completados. Cuenta cuántos pedidos hay en cada estado y muestra el total en una columna llamada Cantidad_Pedidos.
+Es útil para monitorear el progreso de los pedidos y priorizar acciones.
+
+CREATE VIEW V_Estado_Pedidos 
+AS
+SELECT Estado_pedido, COUNT(Id_pedido) AS Cantidad_Pedidos
+FROM Pedidos
+GROUP BY Estado_pedido;
+
+SELECT * FROM V_Estado_Pedidos;
+
+2- Vista:  V_Medicamentos_Laboratorios 
+Esta vista tiene como objetivo relacionar los nombres de los medicamentos con los nombres de los laboratorios, partiendo de una tabla intermedia que gestiona esta relación, uniendo mediante Joins el nombre de los respectivos.
+Es más útil que trabajar directamente con la tabla intermedia ya que de esta forma permite entender qué medicamento está asociado a qué laboratorio de forma más descriptiva sin tener que hacer Join cada vez, además puede ser útil para generar reportes, inventarios, negociaciones entre otras.
+
+CREATE VIEW V_Medicamentos_Laboratorios
+AS
+SELECT m.Nombre AS Nombre_Medicamento, l.Nombre AS Nombre_Laboratorio
+FROM Medicamentos_Laboratorios ml
+JOIN Medicamentos M ON ml.Id_medicamento = m.Id_medicamento
+JOIN Laboratorios l ON ml.Id_laboratorio = l.Id_laboratorio;
+
+SELECT * FROM V_Medicamentos_Laboratorios;
+
+3- Vista: V_Medicamentos_Ventas
+Esta vista muestra el nombre de cada medicamento junto con la cantidad total vendida. Utiliza la tabla intermedia Medicamentos_Ventas para sumar las cantidades de medicamentos vendidos, agrupándolos por su nombre. Utiliza el Join con la tabla Medicamentos para traer los nombres.
+Muy útil para inventarios y reportes o análisis de ventas.
+
+CREATE VIEW V_Medicamentos_Ventas
+AS
+SELECT m.Nombre AS Nombre_Medicamento, SUM(mv.Cantidad) AS Cantidad_vendida
+FROM Medicamentos_Ventas mv
+JOIN Medicamentos m ON m.Id_Medicamento = mv.Id_Medicamento
+GROUP BY m.Nombre; 
+
+
+SELECT * FROM V_Medicamentos_Ventas; 
+---------------------------------------------------------------------
+
+1- Procedimiento Almacenado: sp_Consultar_Medicamentos_Vencidos
+Este procedimiento está diseñado para poder ver con facilidad y rapidez los medicamentos que estén vencidos.
+Correspondiendo a los que su fecha de vencimiento sea menor a la fecha actual, del día de la consulta, trayendo otros datos como el nombre, id, stock como información adicional.
+
+
+DELIMITER //
+
+CREATE PROCEDURE sp_Consultar_Medicamentos_Vencidos()
+BEGIN
+    SELECT Id_medicamento, Nombre, Fecha_Vencimiento, Stock
+    FROM Medicamentos
+    WHERE Fecha_Vencimiento < CURDATE();
+END //
+
+DELIMITER ;
+
+CALL sp_Consultar_Medicamentos_Vencidos();
+
+
+2- Procedimiento Almacenado: sp_Descontar_Stock
+Este procedimiento verifica primero si hay stock suficiente en base a la cantidad que se ingresa en el parámetro de entrada y luego descuenta de la tabla Medicamentos dicha cantidad (si es que es menor al stock existente), en caso de que sea mayor la cantidad ingresada el Error Code va a indicar " Stock insuficiente", aclarando así el motivo del error.
+
+DELIMITER //
+CREATE PROCEDURE sp_Descontar_Stock(
+    IN MedicamentoId INT,
+    IN Cantidad INT
+)
+BEGIN
+    IF (SELECT Stock FROM Medicamentos WHERE Id_medicamento = MedicamentoId) >= Cantidad 
+    THEN
+        UPDATE Medicamentos
+        SET Stock = Stock - Cantidad
+        WHERE Id_medicamento = MedicamentoId;
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Stock insuficiente';
+    END IF;
+END//
+DELIMITER ;
+
+CALL sp_Descontar_Stock( );
+
+-----------------------------------------------------------------------------
+
+1- función: fn_calcular_precio_conIVA
+Esta función tiene dos parámetros de entrada, el precio y el porcentaje de IVA que se desea aplicar a dicho precio. 
+La función devuelve el valor del IVA calculado sobre el precio, y lo que hace en la consulta es sumar este valor al precio original para mostrar el precio con IVA incluido.
+En la consulta, se llama a esta función para cada medicamento de la tabla Medicamentos, generando un nuevo campo en la consulta llamado PrecioConIVA, que representa el precio original más el IVA calculado.
+
+DELIMITER //
+
+CREATE FUNCTION fn_calcular_precio_conIVA(
+	precio DOUBLE, 
+	porcentajeIVA DECIMAL(5, 2)
+)
+RETURNS DOUBLE
+DETERMINISTIC
+BEGIN
+    RETURN ROUND(precio * porcentajeIVA / 100, 2); 
+END;
+//
+
+DELIMITER ;
+
+-- ACA LA LLAMA A LA FUNCION CON IVA 21% A MODO DE EJEMPLO
+
+SELECT Id_medicamento, Nombre, Precio, 
+       fn_calcular_precio_conIVA(Precio, 21) AS PrecioConIVA
+FROM Medicamentos;
+
+
+2-  función:fn_Aplicar_Descuento
+La función tiene dos parámetros de entrada, uno corresponde al precio del producto y el otro al descuento que se quiere aplicar, devolviendo el cálculo de descuento realizado sobre dicho precio.
+Esta función es muy útil ya que permiten trabajar con cálculos dinámicos sin alterar los valores originales en las tablas.
+
+
+DELIMITER //
+CREATE FUNCTION fn_Aplicar_Descuento(
+	PrecioBase DECIMAL(10,2),
+	Descuento DECIMAL(10,2)
+)
+RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGIN
+    RETURN PrecioBase - (PrecioBase * Descuento / 100);
+END//
+DELIMITER ;
+
+-- ---- ACA LA LLAMA A LA FUNCION A MODO DE EJEMPLO
+SELECT fn_Aplicar_Descuento(100, 10) AS PrecioConDescuento; -- Resultado: 90.00
+
+-------------------------------------------------------------
+1- Trigger: Tr_Validar_Precio_Minimo
+Este Trigger verifica en la tabla Medicamentos, antes de actualizar el precio, que no sea menor a 10. Si el precio no cumple con esta condición detiene la operación y muestra un error.
+
+DELIMITER //
+
+CREATE TRIGGER Tr_Validar_Precio_Minimo
+BEFORE UPDATE ON Medicamentos
+FOR EACH ROW
+BEGIN
+    IF NEW.Precio < 10 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El precio no puede ser menor a 10.';
+    END IF;
+END//
+
+DELIMITER ;
+
+Ejemplo de ejecución:
+
+UPDATE Medicamentos
+SET Precio = 15 
+WHERE Id_medicamento = 1;
+
+Acá se ejecuta sin problema porque el precio es mayor o igual a 10. Si en lugar de 15 es un 5 el trigger se activa antes de realizar la operación la detiene y lanza el Error Code: 1644. El precio no puede ser menor a 10.
